@@ -1,0 +1,262 @@
+{UTF-8}
+Gasto publico anual=
+	(Deuda Externa * 0.58*Ingreso interno)/Segemntacion de los pagos de deuda externa
+	~	COP/Year
+	~	*Tasa representativa del mercado*
+	|
+
+Periodos fiscales=
+	3
+	~	Year
+	~		|
+
+Recaudacion anual=
+	(PIB + Impuestos)/Periodos fiscales
+	~	COP/Year
+	~		|
+
+Segemntacion de los pagos de deuda externa=
+	4
+	~	Year*USD
+	~		|
+
+Tasa de cambio de exportaciones=
+	RANDOM 0 1()
+	~	COP/Year
+	~		|
+
+********************************************************
+	.
+********************************************************~
+		<?xml version="1.0" encoding="UTF-8"?>
+		<richtext version="1.0.0.0" xmlns="http://www.wxwidgets.org">
+		  <paragraphlayout textcolor="#000000" fontpointsize="9" fontfamily="70" \
+		fontstyle="90" fontweight="400" fontunderlined="0" fontface="Segoe UI" \
+		alignment="1" parspacingafter="10" parspacingbefore="0" linespacing="10" \
+		margin-left="5,4098" margin-right="5,4098" margin-top="5,4098" \
+		margin-bottom="5,4098">
+		    <paragraph>
+		      <text></text>
+		    </paragraph>
+		  </paragraphlayout>
+		</richtext>
+	|
+
+Necesidad de recaudacion= INTEG (
+	Gasto publico anual,
+		1.1)
+	~	COP
+	~		|
+
+Impuestos=
+	Necesidad de recaudacion
+	~	COP
+	~		|
+
+PIB= INTEG (
+	Exportaciones anuales,
+		3.33)
+	~	COP
+	~	año 2019
+	|
+
+Ingreso interno= INTEG (
+	Recaudacion anual-Gasto publico anual,
+		3.76)
+	~	COP
+	~		|
+
+Exportaciones anuales=
+	0.5* Tasa de cambio de exportaciones
+	~	COP/Year
+	~		|
+
+Prestamos=
+	Necesidad de recaudacion*Tasa de interes * Tasa representativa del mercado
+	~	USD/Year
+	~		|
+
+Clasificacion de riesgo=
+	Deuda Externa*Peso de calificacion
+	~	Dmnl
+	~		|
+
+Conversion de inflacion a aumento del dolar=
+	3
+	~	USD/COP
+	~		|
+
+Deuda Externa= INTEG (
+	Prestamos-Dinero destinado al pago de la deuda,
+		1.87)
+	~	USD
+	~	e+11
+	|
+
+Dinero destinado al pago de la deuda=
+	Ingreso interno*Tasa representativa del mercado*Porcentaje destinado al pago de la deuda
+	~	USD/Year
+	~		|
+
+Inflacion=
+	9 + STEP( 0.25 , 0 )
+	~	Dmnl
+	~		|
+
+Peso de calificacion=
+	1e-05
+	~	1/USD
+	~		|
+
+Porcentaje destinado al pago de la deuda=
+	0.12
+	~	1/Year
+	~		|
+
+Tasa de interes=
+	(Clasificacion de riesgo/Tiempo de evaluacion)*0.02
+	~	1/Year
+	~		|
+
+Tasa representativa del mercado=
+	4.53158e-05 + (Inflacion*Conversion de inflacion a aumento del dolar)
+	~	USD/COP
+	~		|
+
+Tiempo de evaluacion=
+	2
+	~	Year
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 8
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 1
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$-1--1--1,0,|12||-1--1--1|-1--1--1|-1--1--1|-1--1--1|-1--1--1|96,96,110,0
+10,1,Deuda Externa,211,182,62,23,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,2,PIB,452,358,43,23,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,3,Ingreso interno,374,197,43,23,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,4,Inflacion,-188,427,44,44,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,5,Tasa de interes,-98,107,43,43,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,6,Clasificacion de riesgo,-75,245,62,62,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,7,Necesidad de recaudacion,603,199,58,23,3,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,8,Impuestos,507,596,44,44,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,9,Porcentaje destinado al pago de la deuda,259,443,75,75,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,10,48,29,161,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,11,13,10,100,0,0,22,0,192,0,-1--1--1,,1|(62,161)|
+1,12,13,1,4,0,0,22,0,192,0,-1--1--1,,1|(123,161)|
+11,13,0,91,161,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,14,Prestamos,91,192,44,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,15,Tasa representativa del mercado,44,325,60,60,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,16,4,15,1,0,0,0,0,192,0,-1--1--1,,1|(-63,452)|
+1,17,5,13,1,0,0,0,0,192,0,-1--1--1,,1|(28,111)|
+1,18,6,5,1,0,0,0,0,192,0,-1--1--1,,1|(-97,181)|
+1,19,7,13,1,0,0,0,0,192,0,-1--1--1,,1|(388,-1)|
+12,20,48,203,351,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,21,23,1,100,0,0,22,0,192,0,-1--1--1,,1|(203,249)|
+1,22,23,20,4,0,0,22,0,192,0,-1--1--1,,1|(203,324)|
+11,23,0,203,299,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,24,Dinero destinado al pago de la deuda,273,299,62,32,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,25,48,440,268,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,26,28,25,100,0,0,22,0,192,0,-1--1--1,,1|(440,288)|
+1,27,28,2,4,0,0,22,0,192,0,-1--1--1,,1|(440,324)|
+11,28,0,440,307,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,29,Exportaciones anuales,510,307,62,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,30,9,24,1,0,0,0,0,192,0,-1--1--1,,1|(276,366)|
+1,31,7,8,1,0,0,0,0,192,0,-1--1--1,,1|(656,382)|
+1,32,3,24,0,0,0,0,0,192,0,-1--1--1,,1|(0,0)|
+1,33,15,23,1,0,0,0,0,192,0,-1--1--1,,1|(110,280)|
+1,34,1,6,1,0,0,0,0,192,0,-1--1--1,,1|(132,266)|
+10,35,Tiempo de evaluacion,79,65,58,58,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,36,35,5,1,0,0,0,0,192,0,-1--1--1,,1|(-12,41)|
+10,37,Peso de calificacion,-282,198,64,64,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,38,37,6,1,0,0,0,0,192,0,-1--1--1,,1|(-163,179)|
+10,39,Conversion de inflacion a aumento del dolar,75,526,78,78,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,40,39,15,1,0,0,0,0,192,0,-1--1--1,,1|(113,462)|
+1,41,43,3,100,0,0,22,0,192,0,-1--1--1,,1|(446,205)|
+1,42,43,7,4,0,0,22,0,192,0,-1--1--1,,1|(516,205)|
+11,43,0,482,205,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,44,Gasto publico anual,482,236,62,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,45,48,376,478,10,8,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,46,48,45,100,0,0,22,0,192,0,-1--1--1,,1|(376,458)|
+1,47,48,3,4,0,0,22,0,192,0,-1--1--1,,1|(376,327)|
+11,48,0,376,440,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,49,Recaudacion anual,437,440,53,23,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,50,2,49,1,0,0,0,0,192,0,-1--1--1,,1|(508,418)|
+1,51,8,49,1,0,0,0,0,192,0,-1--1--1,,1|(413,550)|
+1,52,1,44,1,0,0,0,0,192,0,-1--1--1,,1|(383,150)|
+10,53,Periodos fiscales,310,703,43,43,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,54,53,49,1,0,0,0,0,192,0,-1--1--1,,1|(320,570)|
+10,55,Tasa de cambio de exportaciones,564,454,50,50,2,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,56,55,29,1,0,0,0,0,192,0,-1--1--1,,1|(617,355)|
+10,57,Segemntacion de los pagos de deuda externa,406,82,78,78,11,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,58,57,43,1,0,0,0,0,192,0,-1--1--1,,1|(493,140)|
+1,59,3,44,1,0,0,0,0,192,0,-1--1--1,,1|(419,241)|
+1,60,15,14,1,0,0,0,0,192,0,-1--1--1,,1|(39,232)|
+///---\\\
+:L<%^E!@
+1:current.vdfx
+4:Time
+5:Dinero destinado al pago de la deuda
+9:current
+19:110,0
+24:0
+25:8
+26:8
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:1
+72:0
+73:0
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:2
+41:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:1
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8
+105:0,0,0,0,0,0,0,0,0,0
+104:Courier|12||0-0-0|0-0-0|-1--1--1|0-0-255|192-192-192|-1--1--1
